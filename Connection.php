@@ -67,9 +67,12 @@ class Connection extends \yii\redis\Connection
         }
     }
 
-    public function executeCommand($name, $params = [], $hostname = '')
+    public function executeCommand($name, $params = [], $hostname = '', $socket = null)
     {
-        $this->open($hostname);
+        if (is_null($socket)) {
+            $this->open($hostname);
+            $socket = $this->_socket;
+        }
 
         array_unshift($params, $name);
         $command = '*' . count($params) . "\r\n";
@@ -78,9 +81,9 @@ class Connection extends \yii\redis\Connection
             $command .= '$' . mb_strlen($arg, '8bit') . "\r\n" . $arg . "\r\n";
         }
         \Yii::trace("Executing Redis Command: {$name}", __METHOD__);
-        fwrite($this->_socket, $command);
+        fwrite($socket, $command);
 
-        return $this->parseResponse(implode(' ', $params), $this->_socket);
+        return $this->parseResponse(implode(' ', $params), $socket);
     }
 
     private function parseResponse($command, $socket)
@@ -162,7 +165,9 @@ class Connection extends \yii\redis\Connection
             if ($this->dataTimeout !== null) {
                 stream_set_timeout($socket, $timeout = (int)$this->dataTimeout, (int)(($this->dataTimeout - $timeout) * 1000000));
             }
-
+            if ($this->password !== null) {
+                $this->executeCommand('AUTH', [$this->password], '', $socket);
+            }
         } else {
             \Yii::error("Failed to open redis DB connection ($connection): $errorNumber - $errorDescription", __CLASS__);
             $message = YII_DEBUG ? "Failed to open redis DB connection ($connection): $errorNumber - $errorDescription" : 'Failed to open DB connection.';
