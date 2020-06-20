@@ -25,13 +25,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist heyanlong/yii2-redis
+php composer.phar require --prefer-dist etitov-cm/yii2-redis
 ```
 
 or add
 
 ```json
-"heyanlong/yii2-redis": "~2.0.0"
+"etitov-cm/yii2-redis": "~2.0.0"
 ```
 
 to the require section of your composer.json.
