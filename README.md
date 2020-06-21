@@ -7,9 +7,9 @@ you to store active records in redis.
 
 For license information check the [LICENSE](LICENSE.md)-file.
 
-[![Latest Stable Version](https://poser.pugx.org/heyanlong/yii2-redis/v/stable.png)](https://packagist.org/packages/etitov-cm/yii2-redis)
-[![Total Downloads](https://poser.pugx.org/heyanlong/yii2-redis/downloads.png)](https://packagist.org/packages/etitov-cm/yii2-redis)
-[![Build Status](https://travis-ci.org/heyanlong/yii2-redis.svg?branch=master)](https://travis-ci.org/etitov-cm/yii2-redis)
+[![Latest Stable Version](https://poser.pugx.org/etitov-cm/yii2-redis/v/stable.png)](https://packagist.org/packages/etitov-cm/yii2-redis)
+[![Total Downloads](https://poser.pugx.org/etitov-cm/yii2-redis/downloads.png)](https://packagist.org/packages/etitov-cm/yii2-redis)
+[![Build Status](https://travis-ci.org/etitov-cm/yii2-redis.svg?branch=master)](https://travis-ci.org/etitov-cm/yii2-redis)
 
 
 Requirements
@@ -31,7 +31,7 @@ php composer.phar require --prefer-dist etitov-cm/yii2-redis
 or add
 
 ```json
-"etitov-cm/yii2-redis": "~2.0.0"
+"etitov-cm/yii2-redis": "*"
 ```
 
 to the require section of your composer.json.
