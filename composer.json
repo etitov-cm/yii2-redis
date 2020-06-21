@@ -29,7 +29,7 @@
         "yiisoft/yii2-redis": "~2.0.0"
     },
     "autoload": {
-        "psr-4": {"etitovcm\\redis\\": ""}
+        "psr-4": {"etitov\\redis\\": ""}
     },
     "extra": {
         "branch-alias": {

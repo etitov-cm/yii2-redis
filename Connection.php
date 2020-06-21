@@ -5,7 +5,7 @@
  * @license http://www.heyanlong.com/license/
  */
 
-namespace etitovcm\redis;
+namespace etitov\redis;
 
 use yii\db\Exception;
 use yii\helpers\Inflector;
