@@ -109,8 +109,13 @@ class Connection extends \yii\redis\Connection
 
                     $hostname = $moved[2];
 
-                    $name = explode(' ', $command)[0];
-                    $param = $this->parseParams($command);
+                    $exp = explode(' ', $command);
+                    $name = $exp[0];
+                    if (count($exp) > 2) {
+                        $param = $this->parseParams($command);
+                    } else {
+                        $param = array_slice(explode(' ', $command), 1);
+                    }
 
                     return $this->executeCommand($name, $param, $hostname);
 
