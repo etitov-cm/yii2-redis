@@ -110,7 +110,7 @@ class Connection extends \yii\redis\Connection
                     $hostname = $moved[2];
 
                     $name = explode(' ', $command)[0];
-                    $param = array_slice(explode(' ', $command), 1);
+                    $param = $this->parseParams($command);
 
                     return $this->executeCommand($name, $param, $hostname);
 
@@ -175,5 +175,13 @@ class Connection extends \yii\redis\Connection
         }
 
         return $socket;
+    }
+
+    private function parseParams($command)
+    {
+        $spaceExplode = explode(' ', $command);
+        $paramEx = array_slice($spaceExplode, 2, -2);
+
+        return array_merge([$spaceExplode[1]], [join(' ', $paramEx)], array_slice($spaceExplode, -2));
     }
 }
