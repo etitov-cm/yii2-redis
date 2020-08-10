@@ -75,11 +75,36 @@ class Connection extends \yii\redis\Connection
         }
 
         array_unshift($params, $name);
-        $command = '*' . count($params) . "\r\n";
+
+        $json = '';
+        $isJson = false;
+        $countCommand = 0;
+        $subCommand = '';
 
         foreach ($params as $arg) {
-            $command .= '$' . mb_strlen($arg, '8bit') . "\r\n" . $arg . "\r\n";
+            if(substr($arg, 0, 1) === '{') {
+                $isJson = true;
+            }
+
+            if($isJson) {
+                $json .= ' ' . $arg;
+            }
+
+            if(substr($arg, -1) === '}') {
+                $arg = $json;
+                $isJson = false;
+                $json = '';
+            }
+
+            if(!$isJson) {
+                $countCommand++;
+                $subCommand .= '$' . mb_strlen($arg, '8bit') . "\r\n" . $arg . "\r\n";
+            }
         }
+
+        $command = '*' . $countCommand . "\r\n" . $subCommand;
+
+
         \Yii::trace("Executing Redis Command: {$name}", __METHOD__);
         fwrite($socket, $command);
 
