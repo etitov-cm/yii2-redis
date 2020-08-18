@@ -76,34 +76,15 @@ class Connection extends \yii\redis\Connection
 
         array_unshift($params, $name);
 
-        $json = '';
-        $isJson = false;
         $countCommand = 0;
         $subCommand = '';
 
         foreach ($params as $arg) {
-            if(substr($arg, 0, 1) === '{') {
-                $isJson = true;
-            }
-
-            if($isJson) {
-                $json .= ' ' . $arg;
-            }
-
-            if(substr($arg, -1) === '}') {
-                $arg = $json;
-                $isJson = false;
-                $json = '';
-            }
-
-            if(!$isJson) {
-                $countCommand++;
-                $subCommand .= '$' . mb_strlen($arg, '8bit') . "\r\n" . $arg . "\r\n";
-            }
+            $countCommand++;
+            $subCommand .= '$' . mb_strlen($arg, '8bit') . "\r\n" . $arg . "\r\n";
         }
 
         $command = '*' . $countCommand . "\r\n" . $subCommand;
-
 
         \Yii::trace("Executing Redis Command: {$name}", __METHOD__);
         fwrite($socket, $command);
@@ -135,9 +116,9 @@ class Connection extends \yii\redis\Connection
                     $hostname = $moved[2];
 
                     $exp = explode(' ', $command);
-                    $name = $exp[0];
+                    $name = array_shift($exp);
                     if (count($exp) > 2) {
-                        $param = $this->parseParams($command);
+                        $param = $this->parseParams($exp);
                     } else {
                         $param = array_slice(explode(' ', $command), 1);
                     }
@@ -207,11 +188,32 @@ class Connection extends \yii\redis\Connection
         return $socket;
     }
 
-    private function parseParams($command)
+    private function parseParams($params)
     {
-        $spaceExplode = explode(' ', $command);
-        $paramEx = array_slice($spaceExplode, 2, -2);
+        $spaceExplode = [];
 
-        return array_merge([$spaceExplode[1]], [join(' ', $paramEx)], array_slice($spaceExplode, -2));
+        $json = '';
+        $isJson = false;
+
+        foreach ($params as $arg) {
+            if(substr($arg, 0, 1) === '{') {
+                $isJson = true;
+                $json = $arg;
+            } elseif($isJson) {
+                $json .= ' ' . $arg;
+            }
+
+            if(substr($arg, -1) === '}') {
+                $arg = $json;
+                $isJson = false;
+                $json = '';
+            }
+
+            if(!$isJson) {
+                $spaceExplode[] = $arg;
+            }
+        }
+
+        return $spaceExplode;
     }
 }
