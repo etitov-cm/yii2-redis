@@ -86,7 +86,7 @@ class Connection extends \yii\redis\Connection
 
         $command = '*' . $countCommand . "\r\n" . $subCommand;
 
-        \Yii::trace("Executing Redis Command: {$name} {$countCommand} {$subCommand}", __METHOD__);
+        \Yii::trace("Executing Redis Command: {$name}", __METHOD__);
         fwrite($socket, $command);
 
         return $this->parseResponse(implode(' ', $params), $socket);
