@@ -117,11 +117,7 @@ class Connection extends \yii\redis\Connection
 
                     $exp = explode(' ', $command);
                     $name = array_shift($exp);
-                    if (count($exp) > 2) {
-                        $param = $this->parseParams($exp);
-                    } else {
-                        $param = array_slice(explode(' ', $command), 1);
-                    }
+                    $param = $this->getParam($name, $exp);
 
                     return $this->executeCommand($name, $param, $hostname);
 
@@ -188,7 +184,26 @@ class Connection extends \yii\redis\Connection
         return $socket;
     }
 
+    private function getParam($name, $params)
+    {
+        if (count($params) > 1) {
+            if($name === 'hmset') {
+                return $this->parseHMParams($params);
+            }
+
+            return $this->parseParams($params);
+        }
+
+        return $params;
+    }
+
     private function parseParams($params)
+    {
+        $paramEx = array_slice($params, 2, -2);
+        return array_merge([$params[1]], [join(' ', $paramEx)], array_slice($params, -2));
+    }
+
+    private function parseHMParams($params)
     {
         $spaceExplode = [];
 
