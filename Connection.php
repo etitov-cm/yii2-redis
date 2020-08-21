@@ -186,21 +186,21 @@ class Connection extends \yii\redis\Connection
 
     private function getParam($name, $params)
     {
-        if (count($params) > 1) {
+        if (count($params) > 2) {
             if($name === 'hmset') {
                 return $this->parseHMParams($params);
             }
 
-            return $this->parseParams($params);
+            return $this->parseParams($name, $params);
         }
 
         return $params;
     }
 
-    private function parseParams($params)
+    private function parseParams($name, $params)
     {
-        $paramEx = array_slice($params, 2, -2);
-        return array_merge([$params[1]], [join(' ', $paramEx)], array_slice($params, -2));
+        $paramEx = array_slice($params, 1, -2);
+        return array_merge([$params[0]], [join(' ', $paramEx)], array_slice($params, -2));
     }
 
     private function parseHMParams($params)
