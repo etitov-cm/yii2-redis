@@ -191,13 +191,13 @@ class Connection extends \yii\redis\Connection
                 return $this->parseHMParams($params);
             }
 
-            return $this->parseParams($name, $params);
+            return $this->parseParams($params);
         }
 
         return $params;
     }
 
-    private function parseParams($name, $params)
+    private function parseParams($params)
     {
         $paramEx = array_slice($params, 1, -2);
         return array_merge([$params[0]], [join(' ', $paramEx)], array_slice($params, -2));
